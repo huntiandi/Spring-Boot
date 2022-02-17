@@ -1,12 +1,12 @@
-SpringBoot
+### SpringBoot
 
-一、环境
+#### 一、环境
 
 * spring Boot2要求Java要在1.8之上，maven要在3.3之上
 
-二、spring Boot和spring
+#### 二、spring Boot和spring
 
-2.1springBoot能做什么
+##### 2.1springBoot能做什么
 
 * spring的生态覆盖了：web开发(Spring Framework)，数据访问(SpringData)，安全控制(SpringSecurity)，分布式(SpringCloud)，消息服务(AMQP)、移动开发(SpringMobile)、批处理(Batch).......
 
@@ -16,7 +16,7 @@ SpringBoot
 
 ![](F:\4.png)
 
-2.2spring Boot的优点
+##### 2.2spring Boot的优点
 
 1. 创建一个独立的spring的应用
 2. 内嵌了web服务器，不再需要将代码打成war包放入tomcat服务器
@@ -25,9 +25,9 @@ SpringBoot
 5. 提供生产级别的监控，外部配置
 6. 无代码产生，无需编写xml
 
-三、微服务
+#### 三、微服务
 
-3.1、基本概念
+##### 3.1、基本概念
 
 * 微服务是一种架构风格
 * 一个应用拆分为一组小型服务
@@ -37,7 +37,7 @@ SpringBoot
 * 可以由全自动部署机制独立部署
 * 去中心化，服务自治，服务可以使用不同语言，不同存储技术
 
-3.2分布式
+##### 3.2分布式
 
 * 由于微服务的出现，自然也就出现了分布式；而分布式的出现也引出了分布式的困难
   * 远程调用问题(a服务放在了3台机器，b服务放在了2台机器，c服务放在4台机器；abc呼啸调用就出现了远程调用问题。一般使用HTTP来解决远程调用的通信问题)
@@ -52,7 +52,7 @@ SpringBoot
   * ......
 * 解决大方案：SpringBoot+SpringCloud
 
-3.3云原生
+##### 3.3云原生
 
 * 服务自愈(若生产某一台机器宕机，如何重新拉起一台)
 * 弹性伸缩(流量高峰增加机器，流量低峰减少机器)
@@ -67,9 +67,9 @@ SpringBoot
 
 ---
 
-四、Spring Boot入门
+#### 四、Spring Boot入门
 
-4.1、官方文档的查看
+##### 4.1、官方文档的查看
 
 * 官方参考文档从入门到精通
 
@@ -79,9 +79,11 @@ SpringBoot
 
   https://github.com/spring-projects/spring-boot/wiki#release-notes
 
-4.2、Hello World
+##### 4.2、Hello World
 
-4.2.1设置maven，maven要在3.3之上，其次使用阿里云镜像会快一点，使用1.8编译
+###### 4.2.1设置maven
+
+​          maven要在3.5之上，其次使用阿里云镜像会快一点，使用1.8编译
 
 ```xml
 <mirrors>
@@ -109,7 +111,7 @@ SpringBoot
   </profiles>
 ```
 
-4.2.2创建hello world
+###### 4.2.2创建hello world
 
 1. 在idea中创建一个maven项目，不需要选择模板
 2. 在pom文件中加入如下代码
@@ -174,10 +176,117 @@ server.port=8888
 * 要==取消==掉cmd中的快速编辑模式，要不然会卡住不动
 * 为什么spring Boot的==jar包可以直接运行==
 
-4.3、Spring Boot的特点
+##### 4.3、Spring Boot的特点
 
-4.3.1、依赖管理
+###### 4.3.1、依赖管理
 
-* 
+* 父项目做的依赖
 
-4.3.2、自动装配
+```xml
+<!--每一个boot项目都会依赖这个parent，而这个parent又依赖于dependencies，在dependencies中定义了常用的依赖的版本号，也就是版本仲裁机制--> 
+<parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.3</version>
+    </parent>
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-dependencies</artifactId>
+    <version>2.5.3</version>
+  </parent>
+```
+
+* 自动仲裁：无需关注版本号，引入默认依赖时不需要写版本号，当然也可以修改默认的版本号，例如想要更改mysql的驱动，在pom文件中加入一个properties修改为想要的mysql版本号Maven会就近配置
+
+```xml
+<properties>
+      <mysql.version>5.1.43</mysql.version>
+</properties>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>${mysql.version}</version>
+</dependency>
+```
+
+* 导入各类starter场景启动器
+
+```xml
+1.官方给我出的各类场景驱动器都是 spring-boor-starter-*的格式   *就是各类场景
+2.只要引入starter，这个场景所需要的常规依赖都会自动导入
+3.spring Boot几乎涵盖了所有的场景
+https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter
+4.除了官方给出的starter还会有一些第三方给出的starter，包括我们也可以自定义starter格式一般都是：*-spring-boot-starter
+5.所有的场景启动器都是依赖于
+ <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>2.5.3</version>
+      <scope>compile</scope>
+ </dependency>
+```
+
+###### 4.3.2、自动装配
+
+* 先有个概念和体验，后面具体来说
+
+* 例如我们引入web-starter后自动配置了tomcat以及springMVC等
+
+* 以mvc为例
+
+  * 在我们引入web-starter的时候引入了mvc的全套组件
+
+  ```xml
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>5.3.9</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>5.3.9</version>
+        <scope>compile</scope>
+      </dependency>
+  ```
+
+  而且帮我们配好了mvc常见的组件例如：字符集编码，文件上传等
+
+  - 默认的包结构(自动扫包机制)
+
+  - - 主程序所在包及其下面的所有子包里面的组件都会被默认扫描进来
+    - 无需以前的包扫描配置
+
+  - - 想要改变扫描路径，@SpringBootApplication(scanBasePackages=**"com.yang"**)
+
+  - - - 或者@ComponentScan 指定扫描路径
+
+* 各种配置拥有默认值
+
+- - 默认配置最终都是映射到某个类上，如：MultipartProperties
+  - 配置文件的值最终会绑定每个类上，这个类会在容器中创建对象
+
+- 按需加载所有自动配置项
+
+- - 引入了哪些场景这个场景的自动配置才会开启
+
+- - SpringBoot所有的自动配置功能都在 spring-boot-autoconfigure 包里面
+
+##### 4.4、容器功能
+
+###### 4.4.1、组件添加
+
+* @Configuration注解
+
+  * 该注解告诉spring Boot该类为一个配置类，在类中使用@Bean来添加组件
+
+  * Full模式
+    * 默认情况是full模式，spring Boot会每次检查容器中的组件，若已经有，会使用已有的组件，若没有会进行注册
+    * 若有组件依赖时，会使用full模式，其他使用lite模式
+  * Lite模式
+    * 运行时不用生成CGLIB子类，提高运行性能，降低启动时间，可以作为普通类使用。但是不能声明@Bean之间的依赖
+
+* 之前的@Component、@Controller、@Service、@Repository也可以进行组件添加
+
+* @Import：可以导入多个类，底层是一个数组；给容器中自动创建出该类的组件，默认组件名字及时全类名
