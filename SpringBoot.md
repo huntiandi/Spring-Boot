@@ -286,7 +286,23 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
     * 若有组件依赖时，会使用full模式，其他使用lite模式
   * Lite模式
     * 运行时不用生成CGLIB子类，提高运行性能，降低启动时间，可以作为普通类使用。但是不能声明@Bean之间的依赖
-
 * 之前的@Component、@Controller、@Service、@Repository也可以进行组件添加
-
 * @Import：可以导入多个类，底层是一个数组；给容器中自动创建出该类的组件，默认组件名字及时全类名
+
+###### 4.4.2、条件装配
+
+* @Conditional注解：满足某个条件才进行组件的注入
+* 可以加在方法也可以直接加在类上面
+
+```java
+ @Bean
+    @ConditionalOnBean(Pet.class)
+    public User user01(){
+        User user = new User("张三", 18);
+        user.setPet(pet01());
+        return user;
+    }
+//以该注解为例，当容器中有Pet类型的bean时才对user进行注入
+```
+
+4.4.3、

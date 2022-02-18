@@ -2,6 +2,8 @@ package com.yang.conf;
 
 import com.yang.bean.Pet;
 import com.yang.bean.User;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,13 +21,14 @@ public class MyConfig {
      * @return
      */
     @Bean
+    @ConditionalOnBean(Pet.class)
     public User user01(){
         User user = new User("张三", 18);
         user.setPet(pet01());
         return user;
     }
 
-    @Bean("tom")
+//    @Bean("tom")
     public Pet pet01(){
         return new Pet("当当");
     }

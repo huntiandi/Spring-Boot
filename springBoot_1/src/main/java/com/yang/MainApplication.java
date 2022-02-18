@@ -25,13 +25,17 @@ public class MainApplication {
         }*/
 
         //单例的
-        User user01 = run.getBean("user01", User.class);
+       /* User user01 = run.getBean("user01", User.class);
         User user02 = run.getBean("user01", User.class);
         System.out.println(user01 == user02);
 
         //proxyBeanMethods = false 取消了组件依赖
         User user03 = run.getBean("user01", User.class);
         Pet tom = run.getBean("tom", Pet.class);
-        System.out.println(user03.getPet() == tom);
+        System.out.println(user03.getPet() == tom);*/
+
+        //测试Conditional注解      containsBean是否包含该bean
+        boolean b1 = run.containsBean("user01");
+        System.out.println(b1);
     }
 }
