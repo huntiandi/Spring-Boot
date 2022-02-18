@@ -3,8 +3,11 @@ package com.yang;
 import com.yang.bean.Pet;
 import com.yang.bean.User;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @ProjectName: com.yang
@@ -12,7 +15,10 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @description:
  * @data: 2022/2/16
  */
-@SpringBootApplication(scanBasePackages = "com")
+//@SpringBootApplication(scanBasePackages = "com")
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan("com")
 public class MainApplication {
     public static void main(String[] args) {
         //返回的是一个ioc容器

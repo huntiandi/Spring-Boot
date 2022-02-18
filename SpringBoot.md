@@ -305,4 +305,41 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 //以该注解为例，当容器中有Pet类型的bean时才对user进行注入
 ```
 
-4.4.3、
+###### 4.4.3、原生配置文件引入
+
+* ==@ConfigurationProperties(prefix = "mycar")==注解加在bean上面，将properties内容绑定到bean上面
+* 因为只有在容器的组件才能使用spring Boot的强大功能，所以要在bean上面添加@Component注解
+* 当然有时候我们需要用的是第三方的bean，没法用@Component注解，我们可以在我们的配置类上面添加@EnableConfigurationProperties(bean.class)代表开启配置绑定功能，会把这个bean自动注册到容器中
+
+##### 4.5、自动配置原理
+
+###### 4.5.1、@SpringBootApplication注解
+
+* 该注解是一个复合注解由 @SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan这三个注解构成
+* 其中@SpringBootConfiguration注解代表当前类是一个配置类，是spring Boot的核心配置类
+* @ComponentScan注解可以指定扫描包
+* @EnableAutoConfiguration该注解是spring Boot自动装配的核心注解
+
+###### 4.5.2、@EnableAutoConfiguration注解
+
+* 该注解也是合成注解由@AutoConfigurationPackage、@Import这两个注解构成
+
+* 其中@AutoConfigurationPackage注解是自动配置包的意思，主要是指定了包默认规则
+
+  * ```java
+    @Import({Registrar.class})
+    public @interface AutoConfigurationPackage {
+    //Import注解为spring Boot注册一系列的组件
+    //利用Registrar方法将指定包下的所有组件都注入；也就是主应用程序所在的包，所以这就是为什么默认包路径是和主应用程序的路劲是一致的
+    //获取包路径
+    //  (new AutoConfigurationPackages.PackageImports(metadata)).getPackageNames()
+    ```
+
+* @Import({AutoConfigurationImportSelector.class})注解批量导入组件
+
+  * AutoConfigurationImportSelector是关键类，而这个类中的 getCandidateConfigurations(annotationMetadata, attributes)获取到所有需要导入到容器中的配置类
+  * 利用工厂加载 Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader)；得到所有的组件
+  * 从META-INF/spring.factories位置来加载一个文件。默认扫描当前系统里面所有META-INF/spring.factories位置的文件 spring-boot-autoconfigure-2.5.3.RELEASE.jar包里面也有META-INF/spring.factories
+  * spring.factories 文件里面写死了spring-boot一启动就要给容器中加载的所有配置类，一共127个xxxAutoConfiguration；然后spring Boot会根据按条件加载的规则(@Conditional)，加载需要的组件
+
+4.5.3
