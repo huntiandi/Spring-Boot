@@ -337,9 +337,14 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 * @Import({AutoConfigurationImportSelector.class})注解批量导入组件
 
-  * AutoConfigurationImportSelector是关键类，而这个类中的 getCandidateConfigurations(annotationMetadata, attributes)获取到所有需要导入到容器中的配置类
+  * AutoConfigurationImportSelector是关键类，而这个类中的 getAutoConfigurationEntry方法中的getCandidateConfigurations(annotationMetadata, attributes)---->loadFactoryNames--->loadSpringFactories获取到所有需要导入到容器中的配置类
   * 利用工厂加载 Map<String, List<String>> loadSpringFactories(@Nullable ClassLoader classLoader)；得到所有的组件
   * 从META-INF/spring.factories位置来加载一个文件。默认扫描当前系统里面所有META-INF/spring.factories位置的文件 spring-boot-autoconfigure-2.5.3.RELEASE.jar包里面也有META-INF/spring.factories
   * spring.factories 文件里面写死了spring-boot一启动就要给容器中加载的所有配置类，一共127个xxxAutoConfiguration；然后spring Boot会根据按条件加载的规则(@Conditional)，加载需要的组件
 
-4.5.3
+###### 4.5.3自动装配原理
+
+1. spring Boot中最重要的注解就是@SpringBootApplication，而这个注解时一个复合注解，由三个注解合成，其中实现自动装配的核心注解是@EnableAutoConfiguration，其中@Import({AutoConfigurationImportSelector.class})注解是重点
+2. 利用AutoConfigurationImportSelector类跳转到SpringFactoriesLoaderloader类中的loderSpringFactories方法将SpringBoot中的META-INF/spring.factories加载进来
+3. 工厂里面定义了许多的xxxAutoConfiguration，这些xxxAutoConfiguration按照条件生效，之后从xxxproperties中取值(EnableConfigurationProperties绑定了需要使用的properties)，这些xxxproperties从application.properties中拿值
+
