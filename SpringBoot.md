@@ -346,5 +346,85 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 1. spring Boot中最重要的注解就是@SpringBootApplication，而这个注解时一个复合注解，由三个注解合成，其中实现自动装配的核心注解是@EnableAutoConfiguration，其中@Import({AutoConfigurationImportSelector.class})注解是重点
 2. 利用AutoConfigurationImportSelector类跳转到SpringFactoriesLoaderloader类中的loderSpringFactories方法将SpringBoot中的META-INF/spring.factories加载进来
-3. 工厂里面定义了许多的xxxAutoConfiguration，这些xxxAutoConfiguration按照条件生效，之后从xxxproperties中取值(EnableConfigurationProperties绑定了需要使用的properties)，这些xxxproperties从application.properties中拿值
+3. 工厂里面定义了许多的xxxAutoConfiguration，这些xxxAutoConfiguration按照条件生效，之后从xxxproperties中取值(EnableConfigurationProperties绑定了需要使用的properties，这个注解会将xxxproperties注册到我们的容器中)，而如果我们对属性进行了修改@ConditionalOnProperty(按条件生效)这个注解就会发挥作用，从application.properties中拿值
 
+##### 4.6小结
+
+1. 引入场景依赖
+
+- * https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter
+
+2. 查看自动配置了哪些（选做）
+
+- - 自己分析，引入场景对应的自动配置一般都生效了
+  - 配置文件中debug=true开启自动配置报告。Negative（不生效）\Positive（生效）
+
+3. 是否需要修改
+
+- - 参照文档修改配置项
+
+- - - https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties
+    - 自己分析。xxxxProperties绑定了配置文件的哪些。
+
+- - 自定义加入或者替换组件
+
+- - - @Bean、@Component。。。
+
+- - 自定义器  **XXXXXCustomizer**；
+  - ......
+
+#### 五、开发小技巧
+
+##### 5.1、Lombok插件
+
+* 简化JavaBenan的开发
+
+```xml
+<!--1.pom文件引入lombok依赖-->
+<dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+ </dependency>
+<!--2.在bean上添加想要的注解，例如get/set方法可以使用@Data注解，以及@ToString等注解;也可以使用@Slf4j添加日志-->
+```
+
+##### 5.2、dev-tools
+
+* 不要钱的热部署，其实就是自动重启
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+<!--修改代码后直接CTRL+F9就可以了-->
+```
+
+##### 5.3、Spring Initailizr自动创建spring Boot项目
+
+* 在创建model时使用Spring Initailizr可以自动添加我们想要的场景，会自动搭建好主体架构，配置类，依赖
+
+---
+
+#### 六、Spring Boot核心功能
+
+##### 6.1、配置文件
+
+###### 1、文件类型
+
+1.1、properties文件；和之前spring中的properties文件使用一致
+
+1.2、==yaml文件==
+
+
+
+##### 6.2、web开发
+
+##### 6.3、数据访问
+
+##### 6.4、单元测试
+
+##### 6.5、指标监控
+
+##### 6.6、原理解析
