@@ -277,10 +277,9 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 ###### 4.4.1、组件添加
 
-* @Configuration注解
-
+* ==@Configuration==注解
   * 该注解告诉spring Boot该类为一个配置类，在类中使用@Bean来添加组件
-
+  
   * Full模式
     * 默认情况是full模式，spring Boot会每次检查容器中的组件，若已经有，会使用已有的组件，若没有会进行注册
     * 若有组件依赖时，会使用full模式，其他使用lite模式
@@ -291,7 +290,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 ###### 4.4.2、条件装配
 
-* @Conditional注解：满足某个条件才进行组件的注入
+* ==@Conditional==注解：满足某个条件才进行组件的注入
 * 可以加在方法也可以直接加在类上面
 
 ```java
@@ -308,8 +307,8 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 ###### 4.4.3、原生配置文件引入
 
 * ==@ConfigurationProperties(prefix = "mycar")==注解加在bean上面，将properties内容绑定到bean上面
-* 因为只有在容器的组件才能使用spring Boot的强大功能，所以要在bean上面添加@Component注解
-* 当然有时候我们需要用的是第三方的bean，没法用@Component注解，我们可以在我们的配置类上面添加@EnableConfigurationProperties(bean.class)代表开启配置绑定功能，会把这个bean自动注册到容器中
+* 因为只有在容器的组件才能使用spring Boot的强大功能，所以要在bean上面添加@Component注解才能让@ConfigurationProperties注解生效
+* 当然有时候我们需要用的是第三方的bean，没法用@Component注解，我们可以在我们的配置类上面添加==@EnableConfigurationProperties==(bean.class)代表开启配置绑定功能，会把这个bean自动注册到容器中
 
 ##### 4.5、自动配置原理
 
@@ -318,7 +317,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 * 该注解是一个复合注解由 @SpringBootConfiguration、@EnableAutoConfiguration、@ComponentScan这三个注解构成
 * 其中@SpringBootConfiguration注解代表当前类是一个配置类，是spring Boot的核心配置类
 * @ComponentScan注解可以指定扫描包
-* @EnableAutoConfiguration该注解是spring Boot自动装配的核心注解
+* ==@EnableAutoConfiguration==该注解是spring Boot自动装配的核心注解
 
 ###### 4.5.2、@EnableAutoConfiguration注解
 
