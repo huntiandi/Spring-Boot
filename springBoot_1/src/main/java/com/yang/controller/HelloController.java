@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
+
 /**
  * @ProjectName: com.yang
  * @author: ZhangBiBo
@@ -26,6 +28,8 @@ public class HelloController {
     @RequestMapping("/person")
     public Person helloPerson(){
         System.out.println(person);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        System.out.println(sdf.format(person.getBirth()));
         return person;
     }
 }

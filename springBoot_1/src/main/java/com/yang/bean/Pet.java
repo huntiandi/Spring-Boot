@@ -1,33 +1,25 @@
 package com.yang.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 /**
  * @ProjectName: com.yang.bean
  * @author: ZhangBiBo
  * @description:
  * @data: 2022/2/17
  */
+@Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pet {
     private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public Pet() {
-    }
+    private Integer age;
 
     public Pet(String name) {
         this.name = name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Pet{" +
-                "name='" + name + '\'' +
-                '}';
     }
 }

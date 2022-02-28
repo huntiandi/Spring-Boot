@@ -1,5 +1,38 @@
+spring:
+  jackson:
+    date-format: yyyy/MM/dd
+    time-zone: GMT+8
+
 person:
   username: 张洋
   age: 24
   boos: true
-  birth: 1998/07/01
+  birth: 1998/07/29
+  pet:
+    name: 当当
+    age: 8
+  interests: [篮球,足球,棒球]
+  animal:
+    - 狮子
+    - 老虎
+    - 雪豹
+  score:
+    yuwen: 100
+    shuxue: 99
+    english: 60
+  salary: [8888.88,12000.99]
+  all-pets:
+    sick:
+      - {name: 美国,age: 250}
+      - {name: 英国,age: 500}
+    health:
+      - {name: 中国,age: 5000}
+      - {name: 俄罗斯,age: 800}
+
+
+
+
+
+
+
+

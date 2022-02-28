@@ -416,6 +416,83 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 1.2、==yaml文件==
 
+* YAML 是 "YAML Ain't Markup Language"（YAML 不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是："Yet Another Markup Language"（仍是一种标记语言）。
+* 非常适合用来做以数据为中心的配置文件
+
+###### 1.2.2、基本语法
+
+* key: value；kv之间有空格
+* 大小写敏感
+
+- 使用缩进表示层级关系
+- 缩进不允许使用tab，只允许空格
+
+- 缩进的空格数不重要，只要相同层级的元素左对齐即可
+- '#'表示注释
+
+- 字符串无需加引号，如果要加，单引号与双引号，对字符串内容含义不同
+  * 例如\n单引号不会换行，双引号会换行
+
+###### 1.2.3、数据类型
+
+* 字面量：基本数据类型
+
+  * k: v
+  * date类型时需要添加时区
+
+* 对象，map，list，object 
+
+  * ```properties
+    行内写法：  k: {k1:v1,k2:v2,k3:v3}
+    #或
+    k: 
+    	k1: v1
+      k2: v2
+      k3: v3
+    ```
+
+* 数组和set
+
+```properties
+行内写法：  k: [v1,v2,v3]
+#或者
+k:
+ - v1
+ - v2
+ - v3
+```
+
+###### 1.2.4、提示信息
+
+* 我们自定义得bean没有提示需要在pom文件中添加spring-boot-configuration-processor
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+ <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--打包时不对其进行打包,因为没必要-->
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
 
 
 ##### 6.2、web开发
