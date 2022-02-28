@@ -495,7 +495,40 @@ k:
 
 
 
-##### 6.2、web开发
+#### 6.2、web开发
+
+##### 6.2.1、静态资源访问
+
+* 关于是springBoot中web的官方文档https://docs.spring.io/spring-boot/docs/current/reference/html/web.html#web
+* 默认情况下，Spring Boot 从类路径中名为`/static`（或`/public`或`/resources`或`/META-INF/resources`）的目录获取静态资源
+
+##### 6.2.2、欢迎页面
+
+- 静态资源路径下  index.html
+
+- - 可以配置静态资源路径
+  - 但是不可以配置静态资源的访问前缀。否则导致 index.html不能被默认访问
+
+```yaml
+spring:
+#  mvc:
+#    static-path-pattern: /res/**   这个会导致welcome page功能失效
+
+  resources:
+    static-locations: [classpath:/haha/]
+```
+
+- controller能处理/index
+
+##### 6.2.3、自定义 `Favicon`
+
+favicon.ico 放在静态资源目录下即可。
+
+```yaml
+spring:
+#  mvc:
+#    static-path-pattern: /res/**   这个会导致 Favicon 功能失效
+```
 
 ##### 6.3、数据访问
 

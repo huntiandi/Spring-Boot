@@ -1,0 +1,8 @@
+spring:
+#  mvc:
+#    static-path-pattern: /super/**
+
+  web:
+    resources:
+      #改了以后就只有这一个路径下的可以访问了
+      static-locations: classpath:/xixi/
