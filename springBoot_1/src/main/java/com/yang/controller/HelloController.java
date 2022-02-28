@@ -25,6 +25,7 @@ public class HelloController {
 
     @RequestMapping("/person")
     public Person helloPerson(){
+        System.out.println(person);
         return person;
     }
 }
