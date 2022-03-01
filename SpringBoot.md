@@ -285,6 +285,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
     * 若有组件依赖时，会使用full模式，其他使用lite模式
   * Lite模式
     * 运行时不用生成CGLIB子类，提高运行性能，降低启动时间，可以作为普通类使用。但是不能声明@Bean之间的依赖
+    * 也就是将==proxyBeanMethods==设置为FALSE，每次调用@Bean就都是单独的一个对象，而不是从容器中取了
 * 之前的@Component、@Controller、@Service、@Repository也可以进行组件添加
 * @Import：可以导入多个类，底层是一个数组；给容器中自动创建出该类的组件，默认组件名字及时全类名
 
@@ -529,6 +530,101 @@ spring:
 #  mvc:
 #    static-path-pattern: /res/**   这个会导致 Favicon 功能失效
 ```
+
+##### 6.2.4、静态资源配置原理
+
+- SpringBoot启动默认加载  xxxAutoConfiguration 类（自动配置类）
+- SpringMVC功能的自动配置类 WebMvcAutoConfiguration，生效
+
+```java
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication(type = Type.SERVLET)
+@ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class })
+@ConditionalOnMissingBean(WebMvcConfigurationSupport.class)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 10)
+@AutoConfigureAfter({ DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class,
+		ValidationAutoConfiguration.class })
+public class WebMvcAutoConfiguration {}
+```
+
+- 给容器中配了什么
+
+```java
+@Configuration(proxyBeanMethods = false)
+@Import(EnableWebMvcConfiguration.class)
+@EnableConfigurationProperties({ WebMvcProperties.class, ResourceProperties.class })
+	@Order(0)
+	public static class WebMvcAutoConfigurationAdapter implements WebMvcConfigurer {}
+```
+
+* 配置文件的相关属性和xxx进行了绑定。WebMvcProperties：spring.mvc； ResourceProperties：spring.resources
+
+###### 2.4.2、关于配置类
+
+* 配置类只有一个有参构造器
+
+```java
+	//有参构造器所有参数的值都会从容器中确定
+//WebProperties webProperties；获取和spring.web绑定的所有的值的对象
+//WebMvcProperties mvcProperties 获取和spring.mvc绑定的所有的值的对象
+//ListableBeanFactory beanFactory Spring的beanFactory
+//HttpMessageConverters 找到所有的HttpMessageConverters
+//ResourceHandlerRegistrationCustomizer 找到 资源处理器的自定义器。=========
+//DispatcherServletPath  
+//ServletRegistrationBean   给应用注册Servlet、Filter....
+
+  public WebMvcAutoConfigurationAdapter(WebProperties webProperties, WebMvcProperties mvcProperties, ListableBeanFactory beanFactory, ObjectProvider<HttpMessageConverters> messageConvertersProvider, ObjectProvider<WebMvcAutoConfiguration.ResourceHandlerRegistrationCustomizer> resourceHandlerRegistrationCustomizerProvider, ObjectProvider<DispatcherServletPath> dispatcherServletPath, ObjectProvider<ServletRegistrationBean<?>> servletRegistrations) {
+           。。。
+        }
+```
+
+* 资源的默认处理方式
+
+```java
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+            if (!this.resourceProperties.isAddMappings()) {
+                logger.debug("Default resource handling disabled");
+            } else {
+                this.addResourceHandler(registry, "/webjars/**", "classpath:/META-INF/resources/webjars/");
+                this.addResourceHandler(registry, this.mvcProperties.getStaticPathPattern(), (registration) -> {
+                    registration.addResourceLocations(this.resourceProperties.getStaticLocations());
+                    if (this.servletContext != null) {
+                        ServletContextResource resource = new ServletContextResource(this.servletContext, "/");
+                        registration.addResourceLocations(new Resource[]{resource});
+                    }
+
+                });
+            }}
+//this.resourceProperties.getStaticLocations()获取路径； this.mvcProperties.getStaticPathPattern()获取前缀(/**)
+```
+
+* 欢迎页的配置
+
+```java
+ @Bean
+        public WelcomePageHandlerMapping welcomePageHandlerMapping(ApplicationContext applicationContext, FormattingConversionService mvcConversionService, ResourceUrlProvider mvcResourceUrlProvider) {
+            WelcomePageHandlerMapping welcomePageHandlerMapping = new WelcomePageHandlerMapping(new TemplateAvailabilityProviders(applicationContext), applicationContext, this.getWelcomePage(), this.mvcProperties.getStaticPathPattern());
+            。。。
+            return welcomePageHandlerMapping;
+        }
+```
+
+* 其中    new WelcomePageHandlerMapping  决定了只能在/下面才能使用；favicon.ico同理
+
+```java
+    WelcomePageHandlerMapping(TemplateAvailabilityProviders templateAvailabilityProviders, ApplicationContext applicationContext, Resource welcomePage, String staticPathPattern) {
+        //要用欢迎页功能，必须是/**
+        if (welcomePage != null && "/**".equals(staticPathPattern)) {
+            logger.info("Adding welcome page: " + welcomePage);
+            this.setRootViewName("forward:index.html");
+        } else if (this.welcomeTemplateExists(templateAvailabilityProviders, applicationContext)) {
+              // 调用Controller  /index
+            logger.info("Adding welcome page template: index");
+            this.setRootViewName("index");
+        }}
+```
+
+
 
 ##### 6.3、数据访问
 

@@ -6,3 +6,5 @@ spring:
     resources:
       #改了以后就只有这一个路径下的可以访问了
       static-locations: classpath:/xixi/
+      #默认是true,设置为FALSE可以禁用所有的静态资源
+      add-mappings: true

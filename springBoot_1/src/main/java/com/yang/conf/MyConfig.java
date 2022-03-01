@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @description: 配置类，给容器注册组件，默认是单实例的
  * @data: 2022/2/17
  */
-@Configuration(proxyBeanMethods = true)//这是一个配置类,proxyBeanMethods是否为bean的代理方法，默认是开启的会保证组件间依赖，
+@Configuration(proxyBeanMethods = false)//这是一个配置类,proxyBeanMethods是否为bean的代理方法，默认是开启的会保证组件间依赖，
 @EnableConfigurationProperties(Car.class)
 public class MyConfig {
 
