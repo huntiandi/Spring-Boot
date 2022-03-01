@@ -8,3 +8,8 @@ spring:
       static-locations: classpath:/xixi/
       #默认是true,设置为FALSE可以禁用所有的静态资源
       add-mappings: true
+  #开启rest风格就是将hiddenFilter给打开
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true

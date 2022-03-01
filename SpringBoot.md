@@ -624,7 +624,24 @@ public class WebMvcAutoConfiguration {}
         }}
 ```
 
+* 关于rest风格
 
+  * Rest风格支持（*使用HTTP请求方式动词来表示对资源的操作*）
+
+  * 核心在于filter即HiddenHttpMethodFilter(*它会将除了get和post支持的方法之外 的方法进行转换*)
+
+    * 在springBoot中我们对mvc进行了自动配置，所以在使用时我们需要在yaml中手动打开(*因为使用postman等工具不需要转换，可以直接访问*)
+
+    * ```java
+      	@Bean
+      	@ConditionalOnMissingBean(HiddenHttpMethodFilter.class)
+      	@ConditionalOnProperty(prefix = "spring.mvc.hiddenmethod.filter", name = "enabled", matchIfMissing = false)
+      	public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+      		return new OrderedHiddenHttpMethodFilter();
+      	}
+      ```
+
+  * 有上↗可知，我们在容器中没有HiddenHttpMethodFilter类时才会开启该配置，所以我们也可以自定义一个HiddenHttpMethodFilter，这样可以将“_methord”自定义为自己喜欢的名字
 
 ##### 6.3、数据访问
 

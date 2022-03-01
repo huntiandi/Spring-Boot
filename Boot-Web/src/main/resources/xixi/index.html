@@ -6,5 +6,21 @@
 </head>
 <body>
 <h1>welcome to yang</h1>
+<hr/>
+<form action="/user">
+    <input type="submit" value="GET请求" /><br/>
+</form><hr/>
+<form action="/user" method="post">
+    <input type="submit" value="POST请求" /><br/>
+</form><hr/>
+<!--thymeleaf中取可变参数要用这样@{'/user'+@{2}}-->
+<form action="/user" method="post">
+    <input type="hidden" name="_yang" value="delete">
+    <input type="submit" value="delete请求" /><br/>
+</form><hr/>
+<form action="/user" method="post">
+    <input type="hidden" name="_yang" value="put">
+    <input type="submit" value="put请求" /><br/>
+</form><hr/>
 </body>
 </html>
