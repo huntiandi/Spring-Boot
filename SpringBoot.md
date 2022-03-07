@@ -624,24 +624,84 @@ public class WebMvcAutoConfiguration {}
         }}
 ```
 
-* 关于rest风格
+##### 6.2.5、请求参数处理
 
-  * Rest风格支持（*使用HTTP请求方式动词来表示对资源的操作*）
+###### 2.5.1关于rest风格
 
-  * 核心在于filter即HiddenHttpMethodFilter(*它会将除了get和post支持的方法之外 的方法进行转换*)
+* Rest风格支持（*使用HTTP请求方式动词来表示对资源的操作*）
 
-    * 在springBoot中我们对mvc进行了自动配置，所以在使用时我们需要在yaml中手动打开(*因为使用postman等工具不需要转换，可以直接访问*)
+* 核心在于filter即HiddenHttpMethodFilter(*它会将除了get和post支持的方法之外 的方法进行转换*)
 
-    * ```java
-      	@Bean
-      	@ConditionalOnMissingBean(HiddenHttpMethodFilter.class)
-      	@ConditionalOnProperty(prefix = "spring.mvc.hiddenmethod.filter", name = "enabled", matchIfMissing = false)
-      	public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
-      		return new OrderedHiddenHttpMethodFilter();
-      	}
-      ```
+  * 在springBoot中我们对mvc进行了自动配置，所以在使用时我们需要在yaml中手动打开(*因为使用postman等工具不需要转换，可以直接访问*)
 
-  * 有上↗可知，我们在容器中没有HiddenHttpMethodFilter类时才会开启该配置，所以我们也可以自定义一个HiddenHttpMethodFilter，这样可以将“_methord”自定义为自己喜欢的名字
+  * ```java
+    	@Bean
+    	@ConditionalOnMissingBean(HiddenHttpMethodFilter.class)
+    	@ConditionalOnProperty(prefix = "spring.mvc.hiddenmethod.filter", name = "enabled", matchIfMissing = false)
+    	public OrderedHiddenHttpMethodFilter hiddenHttpMethodFilter() {
+    		return new OrderedHiddenHttpMethodFilter();
+    	}
+    ```
+
+* 有上↗可知，我们在容器中没有HiddenHttpMethodFilter类时才会开启该配置，所以我们也可以自定义一个HiddenHttpMethodFilter，这样可以将“_methord”自定义为自己喜欢的名字
+
+* rest实现原理
+
+  1. 在表单提交的时候会有一个参数"_methord"
+  2. 请求到达后会被拦截器拦截，将其"_methord"带的值获取，并判断该表单提交方式是否为post
+  3. 原生request（post），包装模式requesWrapper重写了getMethod方法，返回的是传入的值即(*PUT,DELETE,PATCH*)
+  4. 过滤器在放行时使用的wrapper，之后调用时方法就变成了原有的"_methord"(*PUT,DELETE,PATCH*)中的值
+
+###### 2.5.2、请求映射原理
+
+* springMvc的分析都是从DispatcherServletAutoConfiguration中引用的DispatcherServlet类的doDispatch()方法开始
+
+* ```java
+  				// 找到当前请求使用哪个Handler（Controller的方法）处理
+    				mappedHandler = getHandler(processedRequest);
+  ```
+
+* 其中**RequestMappingHandlerMapping**：保存了所有@RequestMapping 和handler的映射规则。
+
+* SpringBoot自动配置欢迎页的 WelcomePageHandlerMapping 。访问 /能访问到index.html；
+
+* SpringBoot自动配置了默认 的 RequestMappingHandlerMapping
+
+- 请求进来，挨个尝试所有的HandlerMapping看是否有请求信息。
+
+- - 如果有就找到这个请求对应的handler
+  - 如果没有就是下一个 HandlerMapping
+
+- 我们需要一些自定义的映射处理，我们也可以自己给容器中放**HandlerMapping**。
+
+###### 2.5.3、普通参数与注解
+
+* @PathVariable、@RequestHeader、@ModelAttribute、@RequestParam、@MatrixVariable、@CookieValue、@RequestBody
+  * 第一个是rest风格中获取参数使用的注解
+  * 第二个是获取请求头参数
+  * 第三个是model
+  * 第四个获取请求路径中的参数
+  * 矩阵变量，默认是禁用的，需要手动开启
+  * 获取cookie值，获取整个请求体
+* 原理：==待更新==
+
+###### 2.5.4、Servlet API
+
+* 我们可以传入一些原生的servlet来进行操作，例如WebRequest、ServletRequest、MultipartRequest、 HttpSession、等等
+* 其中 **ServletRequestMethodArgumentResolver**  可以解析以上的部分参数
+
+###### 2.5.5、复杂参数
+
+* **Map**、**Model（map、model里面的数据会被放在request的请求域  request.setAttribute）edirectAttributes（ 重定向携带数据）**、**ServletResponse（response）**、
+* **Map、Model类型的参数**，会返回 mavContainer.getModel（）；---> BindingAwareModelMap 是Model 也是Map
+
+###### 2.5.6、自定义参数
+
+* 
+
+##### 6.2.6、数据响应与内容协商
+
+##### 6.2.7、视图解析与模板引擎
 
 ##### 6.3、数据访问
 

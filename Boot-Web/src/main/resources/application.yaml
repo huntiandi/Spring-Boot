@@ -13,3 +13,8 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  datasource:
+    url: jdbc:mysql:///jinshouzhi
+    username: root
+    password: yang0729
+    driver-class-name: com.mysql.jdbc.Driver
