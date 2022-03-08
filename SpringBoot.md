@@ -279,7 +279,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 * ==@Configuration==注解
   * 该注解告诉spring Boot该类为一个配置类，在类中使用@Bean来添加组件
-  
+
   * Full模式
     * 默认情况是full模式，spring Boot会每次检查容器中的组件，若已经有，会使用已有的组件，若没有会进行注册
     * 若有组件依赖时，会使用full模式，其他使用lite模式
@@ -657,8 +657,8 @@ public class WebMvcAutoConfiguration {}
 * springMvc的分析都是从DispatcherServletAutoConfiguration中引用的DispatcherServlet类的doDispatch()方法开始
 
 * ```java
-  				// 找到当前请求使用哪个Handler（Controller的方法）处理
-        				mappedHandler = getHandler(processedRequest);
+  	// 找到当前请求使用哪个Handler（Controller的方法）处理
+     				mappedHandler = getHandler(processedRequest);
   ```
 
 * 其中**RequestMappingHandlerMapping**：保存了所有@RequestMapping 和handler的映射规则。
@@ -750,7 +750,56 @@ public class WebMvcAutoConfiguration {}
         </dependency>
 ```
 
+- 扩展配置项 **spring.datasource.druid**
+- DruidSpringAopConfiguration.**class**,   监控SpringBean的；配置项：**spring.datasource.druid.aop-patterns**
 
+- DruidStatViewServletConfiguration.**class**, 监控页的配置：**spring.datasource.druid.stat-view-servlet；默认开启**
+-  DruidWebStatFilterConfiguration.**class**, web监控配置；**spring.datasource.druid.web-stat-filter；默认开启**
+
+- DruidFilterConfiguration.**class**}) 所有Druid自己filter的配置
+
+###### 6.3.4、整合mybatis操作
+
+* 引入stater
+
+```xml
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+```
+
+* 自动装配的东西
+
+  * SqlSessionFactory: 自动配置好了
+  * SqlSession：自动配置了 **SqlSessionTemplate 组合了SqlSession**
+
+  - @Import(**AutoConfiguredMapperScannerRegistrar**.**class**）；
+  - Mapper： 只要我们写的操作MyBatis的接口标准了 **@Mapper 就会被自动扫描进来**
+
+* 基于配置方式的整合
+
+  1. 再resource目录下需要一个mybatis的全局变量文件，和一个存放mapper.xml的文件夹；
+  2. 在mapper接口上标注@Mapper注解，mapper接口和mapper.xml绑定好
+  3. 在application.yaml中指定mapper.xml的位置，以及配置文件的位置或者配置configuration属性
+  4. 如果数据库表中字段是带_的需要开启mybatis的驼峰命名规则，可以在全局变量文件中的<setting>标签的mapUnderscoreToCamelCase属性设置为true
+  5. 也可以不写全局变量的配置文件直接在yaml中configuration下面设置即可(**推荐**)
+
+* 基于注解模式
+
+  * 可以在mapper接口的方法上面写注解例如@Select，@Update，@Delete等
+  * 简单的sql可以使用注解模式，不编写mapper.xml
+
+* 总结
+
+  * 引入mybatis-starter
+  * **配置application.yaml中，指定mapper-location位置即可**
+
+  - 编写Mapper接口并标注@Mapper注解
+  - 简单方法直接注解方式，复杂方法编写mapper.xml进行绑定映射
+
+  - *@MapperScan("com.atguigu.admin.mapper") 简化，其他的接口就可以不用标注@Mapper注解*（不推荐）
 
 ##### 6.4、单元测试
 

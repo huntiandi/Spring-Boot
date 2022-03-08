@@ -1,5 +1,8 @@
 package com.yang.controller;
 
+import com.yang.bean.Account;
+import com.yang.service.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -10,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class UserController {
+    @Autowired
+    AccountService accountService;
     @GetMapping("/user")
     public String getUser(){
         return "GetUser!";
@@ -28,5 +33,15 @@ public class UserController {
     @DeleteMapping("/user")
     public String deleteUser(){
         return "Delete-User";
+    }
+
+    @GetMapping("/account")
+    public Account getAccount(@RequestParam("id") Integer id){
+        return accountService.getAccount(id);
+    }
+
+    @GetMapping("/account2")
+    public Account getAccountByUsername(@RequestParam("username") String username){
+        return accountService.getAccountByUsername(username);
     }
 }
