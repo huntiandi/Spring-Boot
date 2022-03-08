@@ -34,8 +34,8 @@ public class ParameterTestController {
                                      //直接获取所有的参数，放进一个map
                                      @RequestParam Map<String,String> params,
                                      //因为有重复的key,例如hobby等于篮球，足球，最后就是hobby=足球，篮球会被覆盖，所以要使用找个map，可以指向多个value
-                                     @RequestParam LinkedMultiValueMap<String,String> LParams,
-                                     @CookieValue("Idea-8296e76f")String ga){
+                                     @RequestParam LinkedMultiValueMap<String,String> LParams/*,
+                                     @CookieValue("Idea-8296e76f")String ga*/){
         HashMap<String, Object> map = new HashMap<>();
         map.put("id",id);
         map.put("username",username);
@@ -46,7 +46,7 @@ public class ParameterTestController {
         map.put("hobby",hobby);
         map.put("params",params);
         map.put("LParams",LParams);
-        map.put("cookie",ga);
+//        map.put("cookie",ga);
         return map;
     }
 

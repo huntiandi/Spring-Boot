@@ -658,7 +658,7 @@ public class WebMvcAutoConfiguration {}
 
 * ```java
   				// 找到当前请求使用哪个Handler（Controller的方法）处理
-    				mappedHandler = getHandler(processedRequest);
+        				mappedHandler = getHandler(processedRequest);
   ```
 
 * 其中**RequestMappingHandlerMapping**：保存了所有@RequestMapping 和handler的映射规则。
@@ -704,6 +704,53 @@ public class WebMvcAutoConfiguration {}
 ##### 6.2.7、视图解析与模板引擎
 
 ##### 6.3、数据访问
+
+###### 6.3.1、配置数据源
+
+* 引入jdbc相关starter，jdbc-starter引入了数据源(HikariDataSource)，jdbc，事务(spring-tx)；没有导入数据库驱动，因为spring-boot并不知道你需要使用什么数据库
+
+```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+```
+
+* 导入数据库驱动，数据库的驱动要和数据库的版本对应，由于boot对版本进行了仲裁，所以当需要修改版本时，可以显示的写在version标签中，也可以在properties标签中修改<mysql.version>8.0.22</mysql.version>
+
+```xml
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+<!--            <version>5.1.49</version>-->
+        </dependency>
+```
+
+###### 6.3.2、数据的自动配置类
+
+* DataSourceAutoConfiguration该类是数据源的配置类，修改相关配置时使用**spring.datasource**，其中底层默认的数据库连接池是我们没有自定义才会自动配置
+* DataSourceTransactionManagerAutoConfiguration： 事务管理器的自动配置
+* JdbcTemplateAutoConfiguration： **JdbcTemplate的自动配置，可以来对数据库进行crud**
+
+- - 可以修改这个配置项@ConfigurationProperties(prefix = **"spring.jdbc"**) 来修改JdbcTemplate
+  - @Bean@Primary    JdbcTemplate；容器中有这个组件
+
+- JndiDataSourceAutoConfiguration： jndi的自动配置
+- XADataSourceAutoConfiguration： 分布式事务相关的
+
+###### 6.3.3、Druid数据源
+
+* 引入starter
+
+```xml
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+```
+
+
 
 ##### 6.4、单元测试
 
