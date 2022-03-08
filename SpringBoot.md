@@ -798,8 +798,13 @@ public class WebMvcAutoConfiguration {}
 
   - 编写Mapper接口并标注@Mapper注解
   - 简单方法直接注解方式，复杂方法编写mapper.xml进行绑定映射
+- *@MapperScan("com.atguigu.admin.mapper") 简化，其他的接口就可以不用标注@Mapper注解*（不推荐）
 
-  - *@MapperScan("com.atguigu.admin.mapper") 简化，其他的接口就可以不用标注@Mapper注解*（不推荐）
+###### 6.3.5、整合mybatis-Plus
+
+* 
+
+###### 6.3.6、整合redis
 
 ##### 6.4、单元测试
 
