@@ -377,7 +377,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 ##### 5.1、Lombok插件
 
-* 简化JavaBenan的开发
+* 简化JavaBenan的开发，打开settings，在plugins里面搜索lombok，安装。
 
 ```xml
 <!--1.pom文件引入lombok依赖-->
@@ -872,5 +872,7 @@ public class WebMvcAutoConfiguration {}
   **@MethodSource**：表示读取指定方法的返回值作为参数化测试入参(注意方法返回需要是一个流)
 
 ##### 6.5、指标监控
+
+
 
 ##### 6.6、原理解析
