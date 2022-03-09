@@ -808,6 +808,69 @@ public class WebMvcAutoConfiguration {}
 
 ##### 6.4、单元测试
 
+###### 6.4.1、基本概念
+
+* springBoot2引入了Junit5作为单元测试的默认库
+* 在创建项目时回默认加入，也可以自个儿加入Junit5的stater进行使用
+* 若要使用spring中的东西，例如 @Transactional(当有dml语句时，操作完成后，回自动回滚数据库的数据)要在类上添加@SpringBootTest注解，以加载spring中的东西
+
+###### 6.4.2、常用注解
+
+* https://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations  官网地址
+
+* **@Test :**表示方法是测试方法。但是与JUnit4的@Test不同，他的职责非常单一不能声明任何属性，拓展的测试将会由Jupiter提供额外测试
+
+- **@DisplayName :**为测试类或者测试方法设置展示名称
+
+- **@BeforeEach :**表示在每个单元测试之前执行
+- **@AfterEach :**表示在每个单元测试之后执行
+
+- **@BeforeAll :**表示在所有单元测试之前执行
+- **@AfterAll :**表示在所有单元测试之后执行
+
+- **@Tag :**表示单元测试类别，类似于JUnit4中的@Categories
+- **@Disabled :**表示测试类或测试方法不执行，类似于JUnit4中的@Ignore
+
+- **@Timeout :**表示测试方法运行如果超过了指定时间将会返回错误
+
+###### 6.4.3、断言
+
+* 断言（assertions）是测试方法中的核心部分，用来对测试需要满足的条件进行验证。*这些断言方法都是 org.junit.jupiter.api.Assertions 的静态方法*
+
+|       方法        |                     说明                     |
+| :---------------: | :------------------------------------------: |
+|   assertEquals    |      判断两个对象或两个原始类型是否相等      |
+|  assertNotEquals  |     判断两个对象或两个原始类型是否不相等     |
+|    assertSame     |      判断两个对象引用是否指向同一个对象      |
+|   assertNotSame   |      判断两个对象引用是否指向不同的对象      |
+|    assertTrue     |         判断给定的布尔值是否为 true          |
+|    assertFalse    |         判断给定的布尔值是否为 false         |
+|    assertNull     |        判断给定的对象引用是否为 null         |
+|   assertNotNull   |       判断给定的对象引用是否不为 null        |
+| assertArrayEquals |          判断传入的两个数组是否相同          |
+|     assertAll     | 组合断言，只有组合中两个断言全部成功才算成功 |
+|       fail        |        快速失败，使用该方法，直接失败        |
+
+* JUnit 5 中的前置条件（*assumptions【假设】*）类似于断言，不同之处在于不满足的断言会使得测试方法失败，而不满足的前置条件只会使得测试方法的执行中止，测试结果为跳过而不是错误；两者都不会执行之后的代码。前置条件可以看成是测试方法执行的前提，当该前提不满足时，就没有继续执行的必要。
+
+###### 6.4.4、嵌套测试
+
+* JUnit 5 可以通过 Java 中的内部类和@Nested 注解实现嵌套测试，从而可以更好的把相关的测试方法组织在一起。在内部类中可以使用@BeforeEach 和@AfterEach 注解，而且嵌套的层次没有限制。(了解)
+
+###### 6.4.5、参数化测试
+
+* 要使用参数话测试就不能使用@Test注解 了，而应该使用@ParameterizedTest注解，来告诉Junit这是一个参数化测试方法
+
+* **@ValueSource**: 为参数化测试指定入参来源，支持八大基础类以及String类型,Class类型
+
+  **@NullSource**: 表示为参数化测试提供一个null的入参
+
+  **@EnumSource**: 表示为参数化测试提供一个枚举入参
+
+  **@CsvFileSource**：表示读取指定CSV文件内容作为参数化测试入参
+
+  **@MethodSource**：表示读取指定方法的返回值作为参数化测试入参(注意方法返回需要是一个流)
+
 ##### 6.5、指标监控
 
 ##### 6.6、原理解析
