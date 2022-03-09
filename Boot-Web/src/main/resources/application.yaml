@@ -1,3 +1,4 @@
+
 spring:
 #  mvc:
 #    static-path-pattern: /super/**
@@ -48,3 +49,12 @@ mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+management:
+  endpoints:
+    enabled-by-default: true #暴露所有端点信息
+    web:
+      exposure:
+        include: '*'  #以web方式暴露
+server:
+  port: 8080

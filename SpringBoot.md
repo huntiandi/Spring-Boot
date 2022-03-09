@@ -494,7 +494,11 @@ k:
     </build>
 ```
 
+###### 1.2.5、读取配置内容
 
+1. @Value：直接在属性上使用注解使用"${配置文件中的内容}"
+2. Environment：需要注入这个对象，使用这个对象的getProperty("配置文件属性名称")
+3. @ConfigurationProperties：在实体类上标注该注解，*prefix = "person"*，指定配置文件的属性名称，实体类的属性就会和配置文件属性对应；要在实体类上添加@Component注解配合使用，或者在配置类使用EnableConfigurationProperties注解将bean注入容器
 
 #### 6.2、web开发
 
@@ -873,6 +877,21 @@ public class WebMvcAutoConfiguration {}
 
 ##### 6.5、指标监控
 
+* 引入actuator的stater
+* 配置文件中打开监控
 
+```xml
+management:
+  endpoints:
+    enabled-by-default: true #暴露所有端点信息
+    web:
+      exposure:
+        include: '*'  #以web方式暴露
+```
 
 ##### 6.6、原理解析
+
+###### 6.6.1、Profile功能
+
+* application.properties的配置优先于application.yaml
+* 为了便于环境切换，我们会使用profile功能进行环境的切换激活
