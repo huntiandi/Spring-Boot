@@ -889,9 +889,39 @@ management:
         include: '*'  #以web方式暴露
 ```
 
-##### 6.6、原理解析
+##### 6.6、高级特性
 
 ###### 6.6.1、Profile功能
 
 * application.properties的配置优先于application.yaml
 * 为了便于环境切换，我们会使用profile功能进行环境的切换激活
+
+###### 配置方式
+
+* 多profile文件方式 和 yaml文档方式
+  * 可以在resource目录下创建多个application-xx.properties文件；在application.properties中使用spring.profiles.active=dev来激活某一个properties
+  * 在application.yaml文件中使用---来区分文件，使用on-profile来命名每一个文件；同样使用spring.profiles.active=dev来激活某一个文件；注意使用yaml就把properties给关掉，否则回去找properties中的配置
+  * 不管是properties还是yaml不指定文件的情况下就都是原有的默认配置
+
+###### 激活方式
+
+* 配置文件  虚拟机参数  命令行参数
+* 也可以在虚拟机参数里面填写  -Dspring.profiles.active=dev 来指定启动文件的配置
+* 可以将我们的项目打成一个jar包，在jar包所在的目录直接使用Java -jar来运行jar并且在后面添加--spring.profiles.active=dev来指定激活哪个配置
+
+###### 6.6.2、内部配置加载顺序
+
+1. classpath 根路径
+2. classpath 根路径下config目录
+3. jar包当前目录
+4.  jar包当前目录的config目录
+5.  /config子目录的直接子目录
+
+* 以上顺序越往下优先级越高，即如果1-5中有同一配置，那么5中的会生效，其他均不生效；若有不同的配置，则会生效
+
+###### 6.6.3、外部配置加载顺序
+
+* https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config
+* 指定环境优先，外部优先，后面的可以覆盖前面的同名配置项
+
+###### 6.6.4、初始化过程
