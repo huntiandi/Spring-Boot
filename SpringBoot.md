@@ -407,7 +407,7 @@ https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot
 
 ---
 
-#### 六、Spring Boot核心功能
+### 六、Spring Boot核心功能
 
 ##### 6.1、配置文件
 
@@ -707,7 +707,7 @@ public class WebMvcAutoConfiguration {}
 
 ##### 6.2.7、视图解析与模板引擎
 
-##### 6.3、数据访问
+#### 6.3、数据访问
 
 ###### 6.3.1、配置数据源
 
@@ -810,7 +810,7 @@ public class WebMvcAutoConfiguration {}
 
 ###### 6.3.6、整合redis
 
-##### 6.4、单元测试
+#### 6.4、单元测试
 
 ###### 6.4.1、基本概念
 
@@ -875,7 +875,7 @@ public class WebMvcAutoConfiguration {}
 
   **@MethodSource**：表示读取指定方法的返回值作为参数化测试入参(注意方法返回需要是一个流)
 
-##### 6.5、指标监控
+#### 6.5、指标监控
 
 * 引入actuator的stater
 * 配置文件中打开监控
@@ -889,9 +889,9 @@ management:
         include: '*'  #以web方式暴露
 ```
 
-##### 6.6、高级特性
+#### 6.6、高级特性
 
-###### 6.6.1、Profile功能
+##### 6.6.1、Profile功能
 
 * application.properties的配置优先于application.yaml
 * 为了便于环境切换，我们会使用profile功能进行环境的切换激活
@@ -909,7 +909,7 @@ management:
 * 也可以在虚拟机参数里面填写  -Dspring.profiles.active=dev 来指定启动文件的配置
 * 可以将我们的项目打成一个jar包，在jar包所在的目录直接使用Java -jar来运行jar并且在后面添加--spring.profiles.active=dev来指定激活哪个配置
 
-###### 6.6.2、内部配置加载顺序
+##### 6.6.2、内部配置加载顺序
 
 1. classpath 根路径
 2. classpath 根路径下config目录
@@ -919,9 +919,24 @@ management:
 
 * 以上顺序越往下优先级越高，即如果1-5中有同一配置，那么5中的会生效，其他均不生效；若有不同的配置，则会生效
 
-###### 6.6.3、外部配置加载顺序
+##### 6.6.3、外部配置加载顺序
 
 * https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config
 * 指定环境优先，外部优先，后面的可以覆盖前面的同名配置项
 
-###### 6.6.4、初始化过程
+##### 6.6.4、自定义stater
+
+* stater主要有两部分组成，一部分是启动器，也就是pom文件中的xxx-stater；还有一部分就是自动配置的包，即具体的代码
+  * 场景启动器一般是没有任何源码，只是声明了我们需要哪些依赖
+  * 自动配置包，这个包中是我们的具体实现代码
+    * 首先我们准备一个bean也就是xxxProperties，将该类使用@ConfigurationProperties注解与配置类绑定
+    * 其次我们需要一个具体的实现方法，例如xxxService，在该类中有我们具体的业务逻辑代码，并将我们需要使用的properties文件使用Autowrite注入
+    * 之后还要准备一个配置类，将service注入容器中(因为在第一步的service中我们不会将其注入容器)；并且使用EnableConfigurationProperties注解，将实体类和配置文件的关联打开以及注入容器；还可以使用ConditionOnMissingBean等注解，按照具体情况进行条件判断
+    * 最后需要在resource目录下建立一个META-INF目录，创建spring.faction文件，将我们的配置类XXXAutoConfiguration类的类路径放入其中，这样在springBoot在启动时就可以加载到我们自定义的配置类了
+  * 在创建自定义stater的时候，我们需要两个工程，第一个就是场景启动器，也就是xxx-stater；建个普通maven工程就可以了；在该项目中的pom文件中将自动配置包引入
+  * 最后使用maven直接install打包既可，在其他项目使用时，直接引入场景启动器即可，即一开始建的xxx-spring-boot-stater
+
+#### 6.7、原理解析
+
+##### 6.7.1、初始化过程
+
