@@ -1,4 +1,4 @@
-package com;
+package com.yang.controller;
 
 import com.yang.bean.Car;
 import com.yang.bean.User;

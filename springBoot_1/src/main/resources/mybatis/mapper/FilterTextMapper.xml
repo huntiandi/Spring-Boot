@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.dao.FilterTextMapper">
+    <resultMap id="FilterTexResultMap" type="com.yang.entity.FilterTextEntity">
+        <id property="id" column="id"/>
+        <result property="filter_rule" column="filterRule"/>
+        <result property="file_Name" column="fileName"/>
+        <result property="file_text" column="fileText"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="FilterTexResultMap" parameterType="java.lang.String">
+        SELECT * FROM filter_text where filter_rule = #{filterRule}
+    </select>
+
+    <insert id="insertList">
+        INSERT INTO filter_text (filter_rule, file_name, file_text) VALUES
+        <foreach collection="list" separator="," item="item">
+            (#{item.filterRule},#{item.fileName},#{item.fileText})
+        </foreach>
+    </insert>
+</mapper>
