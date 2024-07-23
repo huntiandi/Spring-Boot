@@ -29,7 +29,7 @@ public class FilterTextController {
     @PostMapping("/add")
     public void insert() {
         List<ParagraphDto> paragraphList = paragraphService.select();
-        String rule = ".*(被保险人.*首个保险费约定支付日起|首个保险费约定支付日起.*被保险人).*";
+        String rule = ".*([2-9]|[1-9][0-9]+)名被保险人.*";
         filterTextService.creatFilterText(paragraphList, rule);
     }
 }

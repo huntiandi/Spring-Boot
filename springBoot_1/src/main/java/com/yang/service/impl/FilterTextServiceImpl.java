@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Service("filterTextService")
@@ -43,20 +44,77 @@ public class FilterTextServiceImpl implements FilterTextService {
     }
 
     @Override
-    public void creatFilterText(List<ParagraphDto> dtoList, String rule) {
+    /*public void creatFilterText(List<ParagraphDto> dtoList, String rule) {
         Pattern pattern = Pattern.compile(rule);
         List<FilterTextDto> resultList = new ArrayList<>();
         dtoList.forEach(i -> {
             String content = i.getContent();
+            //要去掉文本中的换行符\\s否则会漏掉
             Matcher matcher = pattern.matcher(content.replaceAll("\\s",""));
             if (matcher.find()) {
                 FilterTextDto textDto = new FilterTextDto();
-                textDto.setFileText(content);
+                textDto.setFileText(content.replaceAll("\\s",""));
                 textDto.setFilterRule(rule);
                 textDto.setFileName(i.getFileName());
+                textDto.setTextId(i.getId());
+                if (".*(倍.*保险金额|保险金额.*倍).*".equals(rule)) {
+                    textDto.setRemark(getMultiple(content));
+                }
                 resultList.add(textDto);
             }
         });
+        Map<String, List<FilterTextDto>> resultMap = resultList.stream().collect(Collectors.groupingBy(FilterTextDto::getFileName));
+        resultMap.forEach((k,v)->{
+            int[] num = new int[]{1};
+            v.forEach(i->{
+                i.setTextNum(num[0]);
+                num[0]++;
+            });
+        });
         insertList(resultList);
+    }*/
+
+    public void creatFilterText(List<ParagraphDto> dtoList, String rule) {
+        Pattern pattern = Pattern.compile(rule);
+        List<FilterTextDto> resultList = dtoList.stream()
+                .filter(i -> pattern.matcher(i.getContent().replaceAll("\\s", "")).find())
+                .map(i -> {
+                    FilterTextDto textDto = new FilterTextDto();
+                    textDto.setFileText(i.getContent().replaceAll("\\s", ""));
+                    textDto.setFilterRule(rule);
+                    textDto.setFileName(i.getFileName());
+                    textDto.setTextId(i.getId());
+                    if (".*宽限期.*".equals(rule)) {
+                        textDto.setRemark(getMultiple(i.getContent()));
+                    }
+                    return textDto;
+                })
+                .collect(Collectors.toList());
+
+        Map<String, List<FilterTextDto>> resultMap = resultList.stream()
+                .collect(Collectors.groupingBy(FilterTextDto::getFileName));
+
+        resultMap.forEach((k, v) -> {
+            IntStream.range(0, v.size()).forEach(i -> v.get(i).setTextNum(i + 1));
+        });
+
+        insertList(resultList);
+    }
+
+
+    /**
+     * 根据文本获取相应的倍数
+     * @param text
+     * @return
+     */
+    private String getMultiple(String text) {
+        String regex = "\\d+[日天]";
+        String result = null;
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text.replaceAll("\\s",""));
+        if (matcher.find()) {
+            result = matcher.group();
+        }
+        return result;
     }
 }

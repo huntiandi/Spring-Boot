@@ -5,7 +5,10 @@
         <id property="id" column="id"/>
         <result property="filter_rule" column="filterRule"/>
         <result property="file_Name" column="fileName"/>
+        <result property="text_id" column="textId"/>
+        <result property="text_num" column="textNum"/>
         <result property="file_text" column="fileText"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <select id="selectAll" resultMap="FilterTexResultMap" parameterType="java.lang.String">
@@ -13,9 +16,9 @@
     </select>
 
     <insert id="insertList">
-        INSERT INTO filter_text (filter_rule, file_name, file_text) VALUES
+        INSERT INTO filter_text (filter_rule, file_name,text_id,text_num,file_text,remark) VALUES
         <foreach collection="list" separator="," item="item">
-            (#{item.filterRule},#{item.fileName},#{item.fileText})
+            (#{item.filterRule},#{item.fileName},#{item.textId},#{item.textNum},#{item.fileText},#{item.remark})
         </foreach>
     </insert>
 </mapper>

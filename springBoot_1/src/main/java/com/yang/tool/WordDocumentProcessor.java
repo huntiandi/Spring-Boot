@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 将word文档进行拆分处理的工具类
+ */
 @Slf4j
 @Component
 public class WordDocumentProcessor {

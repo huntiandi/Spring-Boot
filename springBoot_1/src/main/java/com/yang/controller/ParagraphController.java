@@ -27,7 +27,7 @@ public class ParagraphController {
 
     @PostMapping(value = "/insert")
     public void insert() {
-        File folder = new File("D:\\output");
+        File folder = new File("D:\\pdf转word工具\\【险种定义表条款集合3】\\新建文件夹");
         File[] files = folder.listFiles();
         if (files != null) {
             for (File file : files) {
